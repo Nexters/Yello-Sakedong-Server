@@ -4,11 +4,48 @@ const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const mongoose = require('mongoose');
 
 const app = module.exports = express();
 
 const index = require('./routes/index');
 
+//
+const userRoutes = require('../src/routes/user');
+
+const dbconfig = require('../src/config/db.config');
+
+//DB connect setting
+mongoose.Promise = global.Promise;
+mongoose.connect(dbConfig.url, {useNewUrlParser : true})
+    .then(() => {
+        console.log("connect DB success");
+    })
+    .catch(err => {
+        console.log("could not connect to the database.  " + err);
+        error :err
+    });
+
+//
+const userRoutes = require('../src/routes/user');
+
+// Routes which should handle requests
+app.use("/user", userRoutes);
+
+//CORS Settings
+app.use((req, res, next) => {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header(
+	  "Access-Control-Allow-Headers", 
+	  "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+	);
+	if (req.method === "OPTIONS") {
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");  
+	return res.status(200).json({});
+	}
+	next();
+  });
+	
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
