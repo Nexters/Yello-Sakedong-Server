@@ -4,46 +4,50 @@ const bcrypt = require('bcrypt-nodejs');
 
 const User = require('../db/user');
 
-exports.user_signup = (req, res, next) =>{
-    User.find({yellowSakedongKey:req.headers.yellowsakedongkey})
-    .then(user =>{
-        if(user.length >=1){
-            return res.status(409).json({
-                message : "device key exists"
-            });
-        } else{
-            let code = Math.random().toString(16).substring(3);
-            const user = new User({
-                _id : new mongoose.Types.ObjectId(),
-                userId : code,
-                yellowSakedongKey : req.headers.yellowsakedongkey
-            })
-            user.save()
-            .then(result =>{
-                console.log(result);
-                res.status(201).json({
-                    message : "user created",
-                    userId: result._id
+exports.user_signup = (req, res, next) => {
+    User.find({ yellowSakedongKey: req.headers.yellowsakeongkey })
+        .then(user => {
+            if (user.length >= 1) {
+                console.log(user[0])
+                return res.status(409).json({
+                    message: "device key exists"
                 });
-            })
-            .catch(err=>{
-                console.log(err)
-                res.status(500).json({
-                    error : err
-                });
+            } else {
+                function makeid() {
+                    var text = "";
+                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+                    for (var i = 0; i < 5; i++)
+                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                    return text;
+                }
+                const user = new User({
+                    _id: new mongoose.Types.ObjectId(),
+                    userName: makeid(),
+                    yellowSakedongKey: req.headers.yellowsakeongkey
+                })
+                user.save()
+                    .then(result => {
+                        console.log(result);
+                        res.status(201).json({
+                            message: "user created",
+                            userId : result._id 
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).json({
+                            error: err
+                        });
+                    });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
             });
-        }
-    })
-    .catch(err =>{
-        console.log(err);
-        res.status(500).json({
-            error : err
         });
-    });
 };
 
-
-
-exports.user_post = (req, res, next) => {
-    console.log(req.body);
-}
