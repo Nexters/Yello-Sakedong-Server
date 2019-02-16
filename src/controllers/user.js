@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt-nodejs');
 const User = require('../db/user');
 
 exports.user_signup = (req, res, next) =>{
-    User.find({yellowSakedongKey:req.headers.yellowSakedongKey})
+    User.find({yellowSakedongKey:req.headers.yellowsakedongkey})
     .then(user =>{
         if(user.length >=1){
             return res.status(409).json({
@@ -13,17 +13,17 @@ exports.user_signup = (req, res, next) =>{
             });
         } else{
             let code = Math.random().toString(16).substring(3);
-
             const user = new User({
                 _id : new mongoose.Types.ObjectId(),
                 userId : code,
-                yellowSakedongKey : req.headers.yellowSakedongKey
+                yellowSakedongKey : req.headers.yellowsakedongkey
             })
             user.save()
             .then(result =>{
                 console.log(result);
                 res.status(201).json({
-                    message : "user created"
+                    message : "user created",
+                    userId: result._id
                 });
             })
             .catch(err=>{
@@ -41,3 +41,9 @@ exports.user_signup = (req, res, next) =>{
         });
     });
 };
+
+
+
+exports.user_post = (req, res, next) => {
+    console.log(req.body);
+}

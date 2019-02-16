@@ -24,7 +24,7 @@ mongoose.connect(dbConfig.url, {useNewUrlParser : true})
 	
 // Routes which should handle requests
 const userRoutes = require('../src/routes/user');
-app.use("/user", userRoutes);
+
 
 //CORS Settings
 app.use((req, res, next) => {
@@ -41,7 +41,6 @@ app.use((req, res, next) => {
   });
 	
 app.use(logger('dev'));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
@@ -62,6 +61,8 @@ app.use(session({
 
 app.use(express.urlencoded({extended: true}));
 
+app.use("/user", userRoutes);
+
 app.use(function(req, res, next) {
 	const msgs = req.session.messages || [];
 
@@ -72,6 +73,7 @@ app.use(function(req, res, next) {
 	next();
 	req.session.messages = [];
 });
+
 
 app.use(function(err, req, res, next) {
 	if(!module.parent) console.error(err.stack);
