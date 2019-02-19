@@ -7,4 +7,4 @@ const likeScheme = mongoose.Schema({
     isLike: Boolean
 })
 
-module.exports = mongoose.Model("Like", likeScheme);
+module.exports = mongoose.model("Like", likeScheme);
