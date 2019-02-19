@@ -25,6 +25,7 @@ mongoose.connect(dbConfig.url, {useNewUrlParser : true})
 // Routes which should handle requests
 const userRoutes = require('../src/routes/user');
 const foodRoutes = require('../src/routes/food');
+const outputRoutes = require('../src/routes/output');
 
 
 //CORS Settings
@@ -77,6 +78,7 @@ app.use(function(req, res, next) {
 
 app.use("/user", userRoutes);
 app.use("/food", foodRoutes);
+app.use("/output", outputRoutes);
 
 app.use(function(err, req, res, next) {
 	if(!module.parent) console.error(err.stack);
