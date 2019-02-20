@@ -32,8 +32,8 @@ const storage = multer.diskStorage({
     fileFilter: fileFilter
   });
 
+router.post("/comment", checkAuth, foodController.comment_add);
 router.get("/", checkAuth, foodController.food_list);
-
 router.post("/", checkAuth, upload.single('foodImageUrl'), foodController.food_add);
 
 module.exports = router;
