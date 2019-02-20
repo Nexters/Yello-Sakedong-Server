@@ -12,4 +12,4 @@ const commentSchema = mongoose.Schema({
     likeCount: Number
 })
 
-module.exports = mongoose.Model("comment", commentSchema);
+module.exports = mongoose.model("comment", commentSchema);

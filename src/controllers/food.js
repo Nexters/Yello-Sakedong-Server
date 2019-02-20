@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const User = require('../db/user');
 const Food = require('../db/food');
 const Like = require('../db/like');
+const Comment = require('../db/comment');
 
 exports.food_add = (req, res, next) => {
     const food = new Food({
@@ -13,19 +14,32 @@ exports.food_add = (req, res, next) => {
         foodEmoji : req.body.foodEmoji,
         foodLikeCount : 0
     })
-    const like = new Like({
-        _id: new mongoose.Types.ObjectId,
-        user_id: req.headers.yellosakedongkey,
+
+    const comment = new Comment({
+        _id: new mongoose.Types.ObjectId(),
+        user_id: req.headers._id,
         food_id: food._id,
+        comment: req.body.foodComment,
+        foodEmoji: req.body.foodEmoji,
+        likeCount: 0
+    })
+
+    const like = new Like({
+        _id: new mongoose.Types.ObjectId(),
+        user_id: req.headers._id,
+        comment_id: comment._id,
         isLike: false
     })
 
     food.save()
     .then(v =>{
-        like.save().then(l => {
-            res.status(500).json({
-                food: v,
-                like: l
+        comment.save().then(c =>{
+                like.save().then(l => {
+                res.status(200).json({
+                    food: v,
+                    like: l,
+                    comment: c
+                });  
             })
         })
     }).catch(err =>{
@@ -35,3 +49,25 @@ exports.food_add = (req, res, next) => {
         })
     })
 };
+
+
+exports.comment_add = (req, res, next) => {
+    const comment = new Comment({
+        _id: new mongoose.Types.ObjectId(),
+        user_id: req.headers._id,
+        food_id: req.body.food_id,
+        comment: req.body.foodComment,
+        foodEmoji: req.body.foodEmoji,
+        likeCount: 0
+    })
+
+    comment.save().then(result => {
+        res.status(200).json({
+            comment: result
+        }).catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        });
+    });
+}
