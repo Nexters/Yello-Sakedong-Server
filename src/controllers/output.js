@@ -8,7 +8,6 @@ const Comment = require('../db/comment');
 
 exports.output = function(req, res, next) {
     const inputFoodName = req.query.inputFoodName;
-    const userId = req.headers.user_id;
 
     Food.findOne({
         foodName:inputFoodName
@@ -35,6 +34,24 @@ exports.output = function(req, res, next) {
                     comments: d
                 });
             });
+        }
+    })
+}
+
+exports.comments = function(req, res, next) {
+    const foodId = req.query.foodId;
+    Comment.find({food_id: foodId})
+    .then(v => {
+        if(v === null) {
+            return res.status(200).json({
+                error:200,
+                comments: []
+            })
+        } else {
+            return res.status(200).json({
+                error:200,
+                comments: v
+            })
         }
     })
 }

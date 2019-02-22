@@ -4,6 +4,7 @@ const router = express.Router();
 const outputController = require('../controllers/output');
 const checkAuth = require('../middleware/check-auth');
 
-router.get("/output",checkAuth, outputController.output);
+router.get("/",checkAuth, outputController.output);
+router.get("/comments", checkAuth, outputController.comments);
 
 module.exports = router;
